@@ -1,22 +1,45 @@
+diff -u a/src/addrwatch_stdout.c b/src/addrwatch_stdout.c
 --- a/src/addrwatch_stdout.c	2020-02-03 00:22:18.000000000 +0100
-+++ b/src/addrwatch_stdout.c	2021-06-24 20:27:47.682214123 +0200
-@@ -16,7 +16,7 @@
++++ b/src/addrwatch_stdout.c	2021-06-27 14:17:48.013522717 +0200
+@@ -1,6 +1,7 @@
+ #include "shm.h"
+ #include "shm_client.h"
+ 
++#include <inttypes.h>
+ #include <netinet/in.h>
+ #include <stdio.h>
+ 
+@@ -16,8 +17,8 @@
  		ip4_ntoa(e->ip_address, ip_str);
  	}
  
 -	printf("%lu %s %u %s %s %s\n", e->timestamp, e->interface, e->vlan_tag,
-+	printf("%llu %s %u %s %s %s\n", e->timestamp, e->interface, e->vlan_tag,
- 		mac_str, ip_str, pkt_origin_str[e->origin]);
+-		mac_str, ip_str, pkt_origin_str[e->origin]);
++	printf("%" PRId64 " %s %u %s %s %s\n", e->timestamp, e->interface,
++		e->vlan_tag, mac_str, ip_str, pkt_origin_str[e->origin]);
  }
  
+ int main(int argc, char *argv[])
+diff -u a/src/addrwatch_syslog.c b/src/addrwatch_syslog.c
 --- a/src/addrwatch_syslog.c	2020-02-03 00:22:18.000000000 +0100
-+++ b/src/addrwatch_syslog.c	2021-06-24 20:27:55.486631139 +0200
-@@ -18,7 +18,7 @@
++++ b/src/addrwatch_syslog.c	2021-06-27 14:20:24.117827958 +0200
+@@ -1,6 +1,7 @@
+ #include "shm.h"
+ #include "shm_client.h"
+ 
++#include <inttypes.h>
+ #include <netinet/in.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -18,8 +19,9 @@
  		ip4_ntoa(e->ip_address, ip_str);
  	}
  
 -	syslog(LOG_INFO, "%lu %s %u %s %s %s", e->timestamp, e->interface,
-+	syslog(LOG_INFO, "%llu %s %u %s %s %s", e->timestamp, e->interface,
- 		e->vlan_tag, mac_str, ip_str, pkt_origin_str[e->origin]);
+-		e->vlan_tag, mac_str, ip_str, pkt_origin_str[e->origin]);
++	syslog(LOG_INFO, "%" PRId64 " %s %u %s %s %s", e->timestamp,
++		e->interface, e->vlan_tag, mac_str, ip_str,
++		pkt_origin_str[e->origin]);
  }
  
+ int main(int argc, char *argv[])
